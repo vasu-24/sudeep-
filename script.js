@@ -1,6 +1,6 @@
 /* =====================================================================
-   RMS ARCHITECTURAL BUREAU — SCRIPT
-   Navigation, position tracking, filters, modal, FAQ, counters, form
+   RMS BUREAU — SCRIPT
+   Division-aware navigation, position tracking, filters, modal, form
 ===================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
    SHARED HELPERS
 ------------------------------------------------------------------ */
 const SECTIONS = Array.from(document.querySelectorAll('main section[data-section]'));
+
+/* Sections that use a dark background, so the side tracker stays visible */
+const DARK_SECTIONS = ['divisions', 'process', 'why-rms'];
+
+/* Sections that belong to a division, used for colour tinting */
+const DIVISION_TINT = { architecture: 'a', detailing: 'b' };
 
 function headerOffset() {
   const navbar = document.getElementById('navbar');
@@ -48,12 +54,9 @@ function initNavigation() {
 
   function handleScroll() {
     const y = window.scrollY;
-    if (y > 40) navbar.classList.add('solid');
-    else navbar.classList.remove('solid');
-
+    navbar.classList.toggle('solid', y > 40);
     const announceH = announcementBar ? announcementBar.offsetHeight : 0;
-    if (y > announceH) navbar.classList.add('hide-announce');
-    else navbar.classList.remove('hide-announce');
+    navbar.classList.toggle('hide-announce', y > announceH);
   }
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
@@ -63,7 +66,6 @@ function initNavigation() {
     navMenu.classList.remove('open');
     navToggle.classList.remove('open');
     navToggle.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
   }
   function openMenu() {
     navMenu.classList.add('open');
@@ -105,11 +107,12 @@ function initScrollSpy() {
   const statusBar = document.getElementById('sectionStatus');
   const statusIndex = document.getElementById('statusIndex');
   const statusName = document.getElementById('statusName');
+  const statusDivision = document.getElementById('statusDivision');
   const statusPrev = document.getElementById('statusPrev');
   const statusNext = document.getElementById('statusNext');
+  const progressBar = document.getElementById('progressBar');
 
   const TOTAL = String(SECTIONS.length).padStart(2, '0');
-  const DARK_SECTIONS = ['process', 'why-rms'];
   let currentId = null;
 
   function findCurrent() {
@@ -118,8 +121,6 @@ function initScrollSpy() {
     SECTIONS.forEach(section => {
       if (section.offsetTop <= line) current = section;
     });
-
-    // Bottom of page always resolves to the last section
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
       current = SECTIONS[SECTIONS.length - 1];
     }
@@ -133,15 +134,24 @@ function initScrollSpy() {
     const id = section.id;
     const idx = SECTIONS.indexOf(section);
 
-    // Show the status bar only once the user has left the hero
     if (statusBar) statusBar.classList.toggle('visible', idx > 0);
 
-    // Keep the side tracker readable on dark sections
     const onDark = DARK_SECTIONS.indexOf(id) !== -1;
     dots.forEach(dot => dot.classList.toggle('on-dark', onDark));
 
     if (id === currentId) return;
     currentId = id;
+
+    const tint = DIVISION_TINT[id] || null;
+
+    if (statusBar) {
+      statusBar.classList.remove('tint-a', 'tint-b');
+      if (tint) statusBar.classList.add('tint-' + tint);
+    }
+    if (progressBar) {
+      progressBar.classList.remove('tint-a', 'tint-b');
+      if (tint) progressBar.classList.add('tint-' + tint);
+    }
 
     navLinks.forEach(link => {
       const isActive = link.getAttribute('href') === '#' + id;
@@ -154,6 +164,16 @@ function initScrollSpy() {
 
     if (statusIndex) statusIndex.textContent = (section.dataset.index || '') + ' / ' + TOTAL;
     if (statusName) statusName.textContent = section.dataset.name || '';
+
+    if (statusDivision) {
+      const division = section.dataset.division;
+      if (division) {
+        statusDivision.textContent = division;
+        statusDivision.hidden = false;
+      } else {
+        statusDivision.hidden = true;
+      }
+    }
 
     const prev = SECTIONS[idx - 1];
     const next = SECTIONS[idx + 1];
@@ -188,7 +208,6 @@ function initScrollSpy() {
   window.addEventListener('resize', update);
   update();
 
-  // The prev / next buttons are rewritten on scroll, so bind them directly
   [statusPrev, statusNext].forEach(btn => {
     if (!btn) return;
     btn.addEventListener('click', (e) => {
@@ -219,59 +238,77 @@ function initProgressBar() {
 }
 
 /* ------------------------------------------------------------------
-   PROJECT FILTER
+   PROJECT FILTER — division and building type combined
 ------------------------------------------------------------------ */
 function initProjectFilter() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
+  const divisionBtns = Array.from(document.querySelectorAll('.div-btn'));
+  const typeBtns = Array.from(document.querySelectorAll('.type-btn'));
+  const projectCards = Array.from(document.querySelectorAll('.project-card'));
   const emptyState = document.getElementById('projectsEmpty');
   const statusLine = document.getElementById('filterStatus');
 
-  if (!filterBtns.length) return;
+  if (!projectCards.length) return;
 
-  filterBtns.forEach(btn => {
+  let activeDivision = 'all';
+  let activeType = 'all';
+  let divisionLabel = 'Both Divisions';
+  let typeLabel = 'All Types';
+
+  function apply() {
+    let visibleCount = 0;
+
+    projectCards.forEach(card => {
+      const divisionOk = activeDivision === 'all' || card.getAttribute('data-division') === activeDivision;
+      const typeOk = activeType === 'all' || card.getAttribute('data-category') === activeType;
+
+      if (divisionOk && typeOk) {
+        card.style.display = '';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(12px)';
+        requestAnimationFrame(() => {
+          card.style.transition = 'opacity .35s ease, transform .35s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        });
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (emptyState) emptyState.hidden = visibleCount !== 0;
+
+    if (statusLine) {
+      if (visibleCount === 0) {
+        statusLine.textContent = 'No projects match ' + divisionLabel + ' + ' + typeLabel;
+      } else if (activeDivision === 'all' && activeType === 'all') {
+        statusLine.textContent = 'Showing all ' + visibleCount + ' projects';
+      } else {
+        statusLine.textContent = 'Showing ' + visibleCount + ' of ' + projectCards.length +
+          ' projects \u2014 ' + divisionLabel + ' \u2022 ' + typeLabel;
+      }
+    }
+  }
+
+  divisionBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const filter = btn.getAttribute('data-filter');
-      const label = btn.textContent.trim();
-
-      filterBtns.forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
+      divisionBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
+      activeDivision = btn.getAttribute('data-division');
+      divisionLabel = btn.textContent.trim();
+      apply();
+    });
+  });
 
-      let visibleCount = 0;
-
-      projectCards.forEach(card => {
-        const matches = filter === 'all' || card.getAttribute('data-category') === filter;
-
-        if (matches) {
-          card.style.display = '';
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(12px)';
-          requestAnimationFrame(() => {
-            card.style.transition = 'opacity .35s ease, transform .35s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          });
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      if (emptyState) emptyState.hidden = visibleCount !== 0;
-
-      if (statusLine) {
-        if (visibleCount === 0) {
-          statusLine.textContent = 'No projects in ' + label;
-        } else if (filter === 'all') {
-          statusLine.textContent = 'Showing all ' + visibleCount + ' projects';
-        } else {
-          statusLine.textContent = 'Showing ' + visibleCount + ' of ' + projectCards.length + ' projects \u2014 ' + label;
-        }
-      }
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      activeType = btn.getAttribute('data-filter');
+      typeLabel = btn.textContent.trim();
+      apply();
     });
   });
 }
@@ -288,6 +325,7 @@ function initProjectModal() {
   const modalCta = document.getElementById('modalCta');
 
   const modalImage = document.getElementById('modalImage');
+  const modalDivision = document.getElementById('modalDivision');
   const modalCategory = document.getElementById('modalCategory');
   const modalTitle = document.getElementById('modalTitle');
   const modalLocation = document.getElementById('modalLocation');
@@ -302,6 +340,15 @@ function initProjectModal() {
 
     modalImage.src = img ? img.src : '';
     modalImage.alt = img ? img.alt : '';
+
+    if (modalDivision) {
+      modalDivision.textContent = card.getAttribute('data-division-label') || '';
+      modalDivision.classList.remove('badge-a', 'badge-b');
+      const div = card.getAttribute('data-division');
+      if (div === 'architecture') modalDivision.classList.add('badge-a');
+      if (div === 'detailing') modalDivision.classList.add('badge-b');
+    }
+
     modalCategory.textContent = card.getAttribute('data-category-label') || '';
     modalTitle.textContent = card.getAttribute('data-title') || '';
     modalLocation.textContent = card.getAttribute('data-location') || '';
@@ -351,7 +398,7 @@ function initProjectModal() {
    FAQ ACCORDION
 ------------------------------------------------------------------ */
 function initFAQ() {
-  const faqItems = document.querySelectorAll('.faq-item');
+  const faqItems = Array.from(document.querySelectorAll('.faq-item'));
   if (!faqItems.length) return;
 
   faqItems.forEach(item => {
@@ -509,13 +556,18 @@ function initFormValidation() {
       return;
     }
 
-    submitEnquiry(collectFormData(form));
+    const data = collectFormData(form);
+    submitEnquiry(data);
 
     if (successMsg) {
       successMsg.hidden = false;
-      successMsg.textContent = 'Thank you. Your inquiry has been received. Our engineering director will review it and reply within 24 working hours.';
+      successMsg.textContent = 'Thank you. Your inquiry for ' + (data.division || 'RMS Bureau') +
+        ' has been received. We will reply within 24 working hours.';
     }
+
     form.reset();
+    const firstChoice = form.querySelector('.division-choice input');
+    if (firstChoice) firstChoice.checked = true;
   });
 
   function collectFormData(formEl) {
@@ -523,6 +575,7 @@ function initFormValidation() {
     Array.from(formEl.elements).forEach(el => {
       if (!el.name || el.type === 'submit') return;
       if (el.type === 'file') data[el.name] = el.files[0] ? el.files[0].name : '';
+      else if (el.type === 'radio') { if (el.checked) data[el.name] = el.value; }
       else if (el.type === 'checkbox') {
         if (!Array.isArray(data[el.name])) data[el.name] = [];
         if (el.checked) data[el.name].push(el.value);
