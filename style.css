@@ -320,6 +320,15 @@ section[data-section] { scroll-margin-top: 120px; }
   text-transform: uppercase;
 }
 
+/* BRAND LOGO IMAGE */
+.logo-mark {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: height 0.35s var(--ease-editorial);
+}
+.navbar.solid .logo-mark { height: 36px; }
+
 .nav-menu { display: flex; align-items: center; gap: 22px; }
 .nav-link {
   position: relative;
@@ -591,6 +600,9 @@ section[data-section] { scroll-margin-top: 120px; }
   border-top: 1px solid rgba(255,255,255,0.35);
   border-bottom: 1px solid rgba(255,255,255,0.35);
 }
+/* three-column variant */
+.hero-highlights-3 { grid-template-columns: repeat(3, 1fr); max-width: 720px; }
+
 .hero-highlights div { padding: 16px 18px 16px 0; border-right: 1px solid rgba(255,255,255,0.22); }
 .hero-highlights div + div { padding-left: 18px; }
 .hero-highlights div:last-child { border-right: 0; }
@@ -694,7 +706,6 @@ section[data-section] { scroll-margin-top: 120px; }
 
 /* ------------------------------------------------------------------
    HOW IT WORKS BAND (Section 02)
-   Used to sit on top of the hero, where it fought with the tracker.
 ------------------------------------------------------------------ */
 .how-band {
   background: var(--bg-slate);
@@ -786,6 +797,9 @@ section[data-section] { scroll-margin-top: 120px; }
   border-top: 1px solid var(--border-editorial);
   border-left: 1px solid var(--border-editorial);
 }
+/* four-service layout */
+.services-grid-4 { grid-template-columns: repeat(2, 1fr); }
+
 .service-card {
   background: var(--bg-white);
   padding: 44px 34px;
@@ -804,7 +818,7 @@ section[data-section] { scroll-margin-top: 120px; }
   line-height: 1.15;
   margin-bottom: 14px;
 }
-.card-text { font-size: 14.5px; color: var(--text-muted); font-weight: 300; line-height: 1.75; margin-bottom: 26px; }
+.card-text { font-size: 14.5px; color: var(--text-muted); font-weight: 300; line-height: 1.75; margin-bottom: 0; }
 .card-link {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -823,10 +837,6 @@ section[data-section] { scroll-margin-top: 120px; }
 .about-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 70px; align-items: start; }
 .about-media { position: relative; }
 .about-media img { width: 100%; height: 600px; object-fit: cover; }
-.about-media-tag {
-  position: absolute; bottom: 0; left: 0;
-  background: var(--accent); color: #ffffff; padding: 12px 20px;
-}
 .feature-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -859,7 +869,7 @@ section[data-section] { scroll-margin-top: 120px; }
    SECTION 05 — SECTORS
 ------------------------------------------------------------------ */
 .industries { padding: 70px 0 120px; background-color: var(--bg-canvas); }
-.industries-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.industries-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .industry-card { position: relative; height: 420px; overflow: hidden; background: var(--bg-slate); }
 .industry-card img {
   width: 100%; height: 100%; object-fit: cover;
@@ -926,7 +936,7 @@ section[data-section] { scroll-margin-top: 120px; }
 .filter-btn.active { color: #ffffff; background: var(--accent); border-color: var(--accent); }
 .filter-status { font-size: 10.5px; color: var(--text-dim); letter-spacing: 0.12em; margin: 18px 0 40px; }
 
-.projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
 .project-card {
   background: var(--bg-white);
   border: 1px solid var(--border-editorial);
@@ -937,7 +947,7 @@ section[data-section] { scroll-margin-top: 120px; }
   border-color: var(--accent);
   box-shadow: 0 16px 36px rgba(31,70,100,0.12);
 }
-.project-media { position: relative; height: 265px; overflow: hidden; }
+.project-media { position: relative; height: 300px; overflow: hidden; }
 .project-media img {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform 0.7s var(--ease-editorial);
@@ -1130,11 +1140,7 @@ section[data-section] { scroll-margin-top: 120px; }
 .contact-list li { border-top: 1px solid var(--border-editorial); padding-top: 15px; display: flex; flex-direction: column; gap: 4px; }
 .contact-label { font-size: 10px; letter-spacing: 0.14em; color: var(--accent); }
 .contact-value { font-size: 15px; color: var(--text-main); font-weight: 400; line-height: 1.5; }
-.contact-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 34px; }
-.map-container { border: 1px solid var(--border-editorial); }
-.map-placeholder { background: var(--accent-pale); padding: 40px 24px; text-align: center; }
-.map-placeholder span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; display: block; margin-bottom: 8px; color: var(--accent); }
-.map-placeholder p { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+.contact-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* ------------------------------------------------------------------
    FOOTER
@@ -1147,7 +1153,8 @@ section[data-section] { scroll-margin-top: 120px; }
   padding-bottom: 70px;
   border-bottom: 1px solid rgba(255,255,255,0.14);
 }
-.footer-logo { margin-bottom: 20px; color: #ffffff; }
+.footer-logo { margin-bottom: 20px; color: #ffffff; display: block; }
+.footer-logo-img { width: 100%; max-width: 260px; height: auto; }
 .footer-tagline { font-family: var(--font-serif); font-size: 22px; color: #ffffff; line-height: 1.4; font-weight: 400; }
 .footer-col h4 {
   font-family: var(--font-mono); color: var(--accent-bright); font-size: 10px;
@@ -1221,7 +1228,7 @@ section[data-section] { scroll-margin-top: 120px; }
 
   .intro-grid { grid-template-columns: repeat(2, 1fr); }
   .page-map-list { grid-template-columns: repeat(2, 1fr); }
-  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .services-grid, .services-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .about-grid { grid-template-columns: 1fr; gap: 50px; }
   .about-media img { height: 420px; }
   .industries-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1249,6 +1256,10 @@ section[data-section] { scroll-margin-top: 120px; }
   .announcement-cta { display: none; }
   .announcement-text { white-space: normal; font-size: 9.5px; }
 
+  .logo-mark { height: 34px; }
+  .navbar.solid .logo-mark { height: 30px; }
+  .nav-logo-text { font-size: 14px; }
+
   .status-you { display: none; }
   .status-name { font-size: 16px; }
   .status-btn { padding: 5px 9px; font-size: 9px; }
@@ -1260,7 +1271,7 @@ section[data-section] { scroll-margin-top: 120px; }
 
   .hero { padding: 130px 0 50px; min-height: auto; }
   .hero-plain { font-size: 14.5px; padding: 16px 18px; }
-  .hero-highlights { grid-template-columns: 1fr 1fr; }
+  .hero-highlights, .hero-highlights-3 { grid-template-columns: 1fr 1fr; }
   .hero-highlights div { padding: 14px 12px 14px 0; }
   .hero-highlights div:nth-child(2n) { border-right: 0; padding-left: 14px; }
   .hero-highlights div:nth-child(n+3) { border-top: 1px solid rgba(255,255,255,0.22); }
@@ -1277,7 +1288,7 @@ section[data-section] { scroll-margin-top: 120px; }
   .page-map-list { grid-template-columns: 1fr; }
   .page-map-list a { flex-wrap: wrap; }
 
-  .services-grid, .industries-grid, .projects-grid, .process-track { grid-template-columns: 1fr; }
+  .services-grid, .services-grid-4, .industries-grid, .projects-grid, .process-track { grid-template-columns: 1fr; }
   .industry-card { height: 320px; }
   .feature-list { grid-template-columns: 1fr; }
   .why-grid { grid-template-columns: 1fr; gap: 24px; }
