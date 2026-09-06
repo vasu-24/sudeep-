@@ -535,8 +535,14 @@ function initFormValidation() {
     });
   });
 
-  form.addEventListener('submit', (e) => {
+  const submitBtn = form.querySelector('.btn-submit');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Spam trap: a real visitor never sees or fills this field.
+    const honeypot = form.elements.botcheck;
+    if (honeypot && honeypot.value) return;
 
     const fields = REQUIRED.map(name => form.elements[name]).filter(Boolean);
     let isValid = true;
@@ -549,30 +555,73 @@ function initFormValidation() {
       return;
     }
 
-    submitEnquiry(collectFormData(form));
-
-    if (successMsg) {
-      successMsg.hidden = false;
-      successMsg.textContent = 'Thank you. Your inquiry has been received. Our detailing manager will review it and reply within 24 working hours.';
+    const originalLabel = submitBtn ? submitBtn.textContent : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending\u2026';
     }
-    form.reset();
+    if (successMsg) {
+      successMsg.hidden = true;
+      successMsg.classList.remove('form-failed');
+    }
+
+    try {
+      const result = await submitEnquiry(collectFormData(form));
+      if (!result || result.success !== true) {
+        throw new Error(result && result.message ? result.message : 'Submission rejected');
+      }
+      showMessage('Thank you. Your inquiry has been received. Our detailing manager will review it and reply within 24 working hours.', false);
+      form.reset();
+    } catch (err) {
+      showMessage('Sorry, your inquiry could not be sent just now. Please email info@rmssteeldetailing.com directly, or try again in a moment.', true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    }
   });
+
+  function showMessage(text, failed) {
+    if (!successMsg) return;
+    successMsg.hidden = false;
+    successMsg.textContent = text;
+    successMsg.classList.toggle('form-failed', !!failed);
+  }
 
   function collectFormData(formEl) {
     const data = {};
     Array.from(formEl.elements).forEach(el => {
       if (!el.name || el.type === 'submit') return;
-      if (el.type === 'file') data[el.name] = el.files[0] ? el.files[0].name : '';
-      else if (el.type === 'checkbox') {
+      if (el.name === 'botcheck') return; // never forward the spam trap
+      if (el.type === 'file') {
+        data[el.name] = el.files[0] ? el.files[0].name : '';
+      } else if (el.type === 'checkbox') {
         if (!Array.isArray(data[el.name])) data[el.name] = [];
         if (el.checked) data[el.name].push(el.value);
-      } else data[el.name] = el.value;
+      } else {
+        data[el.name] = el.value;
+      }
     });
+
+    // Flatten checkbox groups so the notification email reads cleanly.
+    Object.keys(data).forEach(key => {
+      if (Array.isArray(data[key])) data[key] = data[key].join(', ');
+    });
+
     return data;
   }
 
-  function submitEnquiry(data) {
-    console.log('Project enquiry captured:', data);
+  async function submitEnquiry(data) {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    return response.json();
   }
 }
 
