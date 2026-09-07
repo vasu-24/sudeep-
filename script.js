@@ -4,9 +4,9 @@
 ===================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initPageRouter();
   initHeroVideo();
   initNavigation();
-  initScrollSpy();
   initProgressBar();
   initProjectFilter();
   initProjectModal();
@@ -89,6 +89,104 @@ function initHeroVideo() {
 /* ------------------------------------------------------------------
    NAVIGATION
 ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------
+   PAGE ROUTER — five pages living inside one HTML file.
+   Each <section> carries data-page="home|services|about|projects|contact".
+   Only the sections belonging to the current page are displayed.
+------------------------------------------------------------------ */
+const PAGE_TITLES = {
+  home: 'RMS Steel Detailing — Structural Steel Detailing & 3D BIM Modelling',
+  services: 'Services — RMS Steel Detailing',
+  about: 'About Us — RMS Steel Detailing',
+  projects: 'Projects — RMS Steel Detailing',
+  contact: 'Contact — RMS Steel Detailing'
+};
+
+function initPageRouter() {
+  const pageSections = Array.from(document.querySelectorAll('[data-page]'));
+  if (!pageSections.length) return;
+
+  const pageOfSection = {};
+  const firstSectionOfPage = {};
+  pageSections.forEach(section => {
+    const page = section.dataset.page;
+    if (!section.id) return;
+    pageOfSection[section.id] = page;
+    if (!firstSectionOfPage[page]) firstSectionOfPage[page] = section.id;
+  });
+
+  const pageLinks = Array.from(document.querySelectorAll('[data-page-link]'));
+
+  function idFromHref(href) {
+    return (href || '').replace(/^#\/?/, '').trim();
+  }
+
+  function isRoute(id) {
+    return Object.prototype.hasOwnProperty.call(pageOfSection, id);
+  }
+
+  function render(page, targetId) {
+    pageSections.forEach(section => {
+      section.classList.toggle('page-active', section.dataset.page === page);
+    });
+
+    pageLinks.forEach(link => {
+      const isCurrent = link.getAttribute('data-page-link') === page;
+      link.classList.toggle('active', isCurrent);
+      if (isCurrent) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+
+    document.body.setAttribute('data-current-page', page);
+    document.title = PAGE_TITLES[page] || PAGE_TITLES.home;
+
+    // Let other modules react (navbar styling, etc.)
+    document.dispatchEvent(new CustomEvent('rms:pagechange', { detail: { page: page } }));
+
+    // Safety net: if the reveal observer misses freshly shown content, show it anyway.
+    window.setTimeout(() => {
+      document.querySelectorAll('.page-active .reveal:not(.in-view)')
+        .forEach(el => el.classList.add('in-view'));
+    }, 500);
+
+    const deepLink = targetId && targetId !== firstSectionOfPage[page]
+      ? document.getElementById(targetId)
+      : null;
+
+    if (deepLink) {
+      window.requestAnimationFrame(() => scrollToTarget(deepLink));
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }
+
+  function navigate(href) {
+    const id = idFromHref(href);
+    const page = isRoute(id) ? pageOfSection[id] : 'home';
+    const newHash = '#' + (id || 'home');
+    if (window.location.hash !== newHash) {
+      window.history.pushState(null, '', newHash);
+    }
+    render(page, id);
+  }
+
+  function syncFromHash() {
+    const id = idFromHref(window.location.hash);
+    const page = isRoute(id) ? pageOfSection[id] : 'home';
+    render(page, id);
+  }
+
+  window.addEventListener('popstate', syncFromHash);
+  window.addEventListener('hashchange', syncFromHash);
+
+  window.RMSRouter = { navigate: navigate, isRoute: isRoute };
+
+  syncFromHash();
+}
+
+/* ------------------------------------------------------------------
+   NAVIGATION
+------------------------------------------------------------------ */
 function initNavigation() {
   const navbar = document.getElementById('navbar');
   const announcementBar = document.getElementById('announcementBar');
@@ -98,11 +196,14 @@ function initNavigation() {
 
   function handleScroll() {
     const y = window.scrollY;
-    navbar.classList.toggle('solid', y > 40);
+    const onHome = document.body.getAttribute('data-current-page') === 'home';
+    // Inner pages have no dark hero behind the bar, so it stays solid throughout.
+    navbar.classList.toggle('solid', y > 40 || !onHome);
     const announceH = announcementBar ? announcementBar.offsetHeight : 0;
     navbar.classList.toggle('hide-announce', y > announceH);
   }
   window.addEventListener('scroll', handleScroll, { passive: true });
+  document.addEventListener('rms:pagechange', handleScroll);
   handleScroll();
 
   function closeMenu() {
@@ -127,11 +228,19 @@ function initNavigation() {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
       if (!href || !href.startsWith('#') || href === '#') return;
-      const target = document.querySelector(href);
-      if (!target) return;
       e.preventDefault();
       closeMenu();
-      scrollToTarget(target);
+
+      // A link to any section on another page hands over to the router,
+      // which swaps the page first and then scrolls to the section.
+      const id = href.slice(1);
+      if (window.RMSRouter && window.RMSRouter.isRoute(id)) {
+        window.RMSRouter.navigate(href);
+        return;
+      }
+
+      const target = document.querySelector(href);
+      if (target) scrollToTarget(target);
     });
   });
 

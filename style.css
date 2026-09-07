@@ -1129,6 +1129,11 @@ section[data-section] { scroll-margin-top: 120px; }
   border: 1px solid var(--border-editorial); border-left: 3px solid var(--accent);
   font-size: 13.5px; color: var(--text-main);
 }
+.form-success.form-failed {
+  background: rgba(190, 60, 45, 0.07);
+  border-left-color: #be3c2d;
+  color: #8c2b1f;
+}
 .scope-options { display: flex; flex-wrap: wrap; gap: 10px 24px; border: 0; margin: 0 0 26px; }
 .scope-options legend { width: 100%; font: 10px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; color: var(--text-dim); }
 .scope-options label { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 13px; }
@@ -1309,4 +1314,27 @@ section[data-section] { scroll-margin-top: 120px; }
   .how-band { padding: 32px 22px 30px; }
   .how-title { font-size: 25px; }
   .back-to-top { right: 20px; bottom: 20px; }
+}
+/* ==================================================================
+   MULTI-PAGE ROUTER
+   The site is one HTML file behaving as five pages. Only sections
+   belonging to the active page are rendered; the rest are removed
+   from the layout entirely.
+================================================================== */
+[data-page]:not(.page-active) { display: none !important; }
+
+/* The single-page wayfinding UI no longer applies across five pages. */
+.section-status,
+.section-tracker { display: none !important; }
+
+/* Inner pages open with a normal section rather than the full-bleed
+   hero, so they need clearance beneath the fixed announcement + navbar. */
+body[data-current-page]:not([data-current-page="home"]) main {
+  padding-top: calc(36px + var(--header-solid-h) + 28px);
+}
+
+@media (max-width: 900px) {
+  body[data-current-page]:not([data-current-page="home"]) main {
+    padding-top: calc(36px + var(--header-solid-h) + 12px);
+  }
 }

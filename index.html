@@ -45,15 +45,11 @@
       </button>
 
       <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link active" data-scroll><span class="nav-num mono">01</span>Home</a></li>
-        <li><a href="#intro" class="nav-link" data-scroll><span class="nav-num mono">02</span>Intro</a></li>
-        <li><a href="#services" class="nav-link" data-scroll><span class="nav-num mono">03</span>Services</a></li>
-        <li><a href="#about" class="nav-link" data-scroll><span class="nav-num mono">04</span>About</a></li>
-        <li><a href="#industries" class="nav-link" data-scroll><span class="nav-num mono">05</span>Sectors</a></li>
-        <li><a href="#process" class="nav-link" data-scroll><span class="nav-num mono">06</span>Process</a></li>
-        <li><a href="#projects" class="nav-link" data-scroll><span class="nav-num mono">07</span>Projects</a></li>
-        <li><a href="#why-rms" class="nav-link" data-scroll><span class="nav-num mono">08</span>Why Us</a></li>
-        <li><a href="#contact" class="nav-link" data-scroll><span class="nav-num mono">12</span>Contact</a></li>
+        <li><a href="#home" class="nav-link active" data-scroll data-page-link="home"><span class="nav-num mono">01</span>Home</a></li>
+        <li><a href="#services" class="nav-link" data-scroll data-page-link="services"><span class="nav-num mono">02</span>Services</a></li>
+        <li><a href="#about" class="nav-link" data-scroll data-page-link="about"><span class="nav-num mono">03</span>About</a></li>
+        <li><a href="#projects" class="nav-link" data-scroll data-page-link="projects"><span class="nav-num mono">04</span>Projects</a></li>
+        <li><a href="#contact" class="nav-link" data-scroll data-page-link="contact"><span class="nav-num mono">05</span>Contact</a></li>
       </ul>
 
       <a href="#contact" class="btn btn-primary nav-cta" data-scroll>Get a Quote</a>
@@ -95,7 +91,7 @@
 <!-- ============================================================
      SECTION 01 — HOME
 ============================================================ -->
-<section class="hero" id="home" data-section data-index="01" data-name="Welcome">
+<section class="hero" id="home" data-page="home" data-section data-index="01" data-name="Welcome">
   <div class="hero-media">
     <video id="heroVideo" autoplay muted loop playsinline preload="metadata"
            poster="https://images.pexels.com/videos/11396197/fpv-drone-footage-11396197.jpeg?auto=compress&cs=tinysrgb&w=1600">
@@ -155,7 +151,7 @@
 <!-- ============================================================
      SECTION 02 — INTRODUCTION
 ============================================================ -->
-<section class="intro" id="intro" data-section data-index="02" data-name="Introduction">
+<section class="intro" id="intro" data-page="home" data-section data-index="02" data-name="Introduction">
   <div class="container">
 
     <div class="section-marker">
@@ -280,7 +276,7 @@
 <!-- ============================================================
      SECTION 03 — SERVICES
 ============================================================ -->
-<section class="services" id="services" data-section data-index="03" data-name="Services">
+<section class="services" id="services" data-page="services" data-section data-index="03" data-name="Services">
   <div class="container">
 
     <div class="section-marker">
@@ -343,7 +339,7 @@
 <!-- ============================================================
      SECTION 04 — ABOUT
 ============================================================ -->
-<section class="about" id="about" data-section data-index="04" data-name="About Us">
+<section class="about" id="about" data-page="about" data-section data-index="04" data-name="About Us">
   <div class="container">
 
     <div class="section-marker">
@@ -398,7 +394,7 @@
 <!-- ============================================================
      SECTION 05 — SECTORS
 ============================================================ -->
-<section class="industries" id="industries" data-section data-index="05" data-name="Sectors">
+<section class="industries" id="industries" data-page="services" data-section data-index="05" data-name="Sectors">
   <div class="container">
 
     <div class="section-marker">
@@ -484,7 +480,7 @@
 <!-- ============================================================
      SECTION 06 — PROCESS
 ============================================================ -->
-<section class="process" id="process" data-section data-index="06" data-name="Process">
+<section class="process" id="process" data-page="services" data-section data-index="06" data-name="Process">
   <div class="container">
 
     <div class="section-marker dark">
@@ -537,7 +533,7 @@
 <!-- ============================================================
      SECTION 07 — PROJECTS
 ============================================================ -->
-<section class="projects" id="projects" data-section data-index="07" data-name="Projects">
+<section class="projects" id="projects" data-page="projects" data-section data-index="07" data-name="Projects">
   <div class="container">
 
     <div class="section-marker">
@@ -686,7 +682,7 @@
 <!-- ============================================================
      SECTION 08 — WHY US
 ============================================================ -->
-<section class="why-rms" id="why-rms" data-section data-index="08" data-name="Why Us">
+<section class="why-rms" id="why-rms" data-page="home" data-section data-index="08" data-name="Why Us">
   <div class="why-media reveal">
     <img src="https://images.pexels.com/photos/36003972/pexels-photo-36003972.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Digital caliper checking the thickness of a fabricated steel beam" loading="lazy">
   </div>
@@ -743,7 +739,7 @@
 <!-- ============================================================
      SECTION 09 — TECHNOLOGY
 ============================================================ -->
-<section class="technology" id="technology" data-section data-index="09" data-name="Technology">
+<section class="technology" id="technology" data-page="about" data-section data-index="09" data-name="Technology">
   <div class="container">
 
     <div class="section-marker">
@@ -818,7 +814,7 @@
 <!-- ============================================================
      SECTION 10 — FACTS
 ============================================================ -->
-<section class="facts" id="facts" data-section data-index="10" data-name="Facts">
+<section class="facts" id="facts" data-page="home" data-section data-index="10" data-name="Facts">
   <div class="container">
 
     <div class="section-marker">
@@ -877,7 +873,7 @@
 <!-- ============================================================
      SECTION 11 — FAQ
 ============================================================ -->
-<section class="faq" id="faq" data-section data-index="11" data-name="FAQ">
+<section class="faq" id="faq" data-page="contact" data-section data-index="11" data-name="FAQ">
   <div class="container">
 
     <div class="section-marker">
@@ -963,7 +959,7 @@
 <!-- ============================================================
      SECTION 12 — CONTACT
 ============================================================ -->
-<section class="contact" id="contact" data-section data-index="12" data-name="Contact">
+<section class="contact" id="contact" data-page="contact" data-section data-index="12" data-name="Contact">
   <div class="container">
 
     <div class="section-marker">
@@ -1151,26 +1147,24 @@
     </div>
 
     <div class="footer-col">
-      <h4>Sections 01 &ndash; 06</h4>
+      <h4>Pages</h4>
       <ul>
-        <li><a href="#home" data-scroll>01 &mdash; Welcome</a></li>
-        <li><a href="#intro" data-scroll>02 &mdash; Introduction</a></li>
-        <li><a href="#services" data-scroll>03 &mdash; Services</a></li>
-        <li><a href="#about" data-scroll>04 &mdash; About Us</a></li>
-        <li><a href="#industries" data-scroll>05 &mdash; Sectors</a></li>
-        <li><a href="#process" data-scroll>06 &mdash; Process</a></li>
+        <li><a href="#home" data-scroll>01 &mdash; Home</a></li>
+        <li><a href="#services" data-scroll>02 &mdash; Services</a></li>
+        <li><a href="#about" data-scroll>03 &mdash; About Us</a></li>
+        <li><a href="#projects" data-scroll>04 &mdash; Projects</a></li>
+        <li><a href="#contact" data-scroll>05 &mdash; Contact</a></li>
       </ul>
     </div>
 
     <div class="footer-col">
-      <h4>Sections 07 &ndash; 12</h4>
+      <h4>Explore</h4>
       <ul>
-        <li><a href="#projects" data-scroll>07 &mdash; Projects</a></li>
-        <li><a href="#why-rms" data-scroll>08 &mdash; Why Us</a></li>
-        <li><a href="#technology" data-scroll>09 &mdash; Technology</a></li>
-        <li><a href="#facts" data-scroll>10 &mdash; Facts</a></li>
-        <li><a href="#faq" data-scroll>11 &mdash; FAQ</a></li>
-        <li><a href="#contact" data-scroll>12 &mdash; Contact</a></li>
+        <li><a href="#industries" data-scroll>Sectors We Serve</a></li>
+        <li><a href="#process" data-scroll>Our Process</a></li>
+        <li><a href="#technology" data-scroll>Technology &amp; Standards</a></li>
+        <li><a href="#why-rms" data-scroll>Why Choose RMS</a></li>
+        <li><a href="#faq" data-scroll>FAQ</a></li>
       </ul>
     </div>
 
