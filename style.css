@@ -1338,3 +1338,163 @@ body[data-current-page]:not([data-current-page="home"]) main {
     padding-top: calc(36px + var(--header-solid-h) + 12px);
   }
 }
+
+/* ==================================================================
+   PAGE BANNER — masthead at the top of each inner page
+================================================================== */
+.page-banner {
+  padding: 54px 0 46px;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-editorial);
+  position: relative;
+}
+.crumb {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 26px;
+}
+.crumb a { color: var(--text-dim); text-decoration: none; transition: color .2s; }
+.crumb a:hover { color: var(--accent); }
+.crumb span[aria-hidden] { opacity: .45; }
+.crumb > span:last-child { color: var(--text-main); }
+
+.banner-head { display: flex; gap: 30px; align-items: flex-start; }
+.banner-num {
+  font-size: 54px; line-height: 1; font-weight: 500;
+  color: var(--border-strong); flex-shrink: 0; padding-top: 6px;
+}
+.banner-title {
+  font-family: var(--font-serif);
+  font-size: clamp(38px, 5.4vw, 66px);
+  line-height: 1.03; letter-spacing: -0.02em;
+  margin: 6px 0 14px; color: var(--text-main);
+}
+.banner-lede {
+  max-width: 62ch; font-size: 16px; line-height: 1.7; color: var(--text-muted);
+}
+.banner-facts {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0; margin-top: 40px;
+  border-top: 1px solid var(--border-light);
+}
+.banner-fact { padding: 20px 24px 0 0; }
+.banner-fact + .banner-fact { padding-left: 24px; border-left: 1px solid var(--border-light); }
+.banner-fact span {
+  display: block; font-size: 10px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+}
+.banner-fact p { font-size: 14.5px; color: var(--text-main); font-weight: 500; }
+
+/* ==================================================================
+   SAMPLE DRAWINGS PANEL
+================================================================== */
+.samples-panel {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 40px; align-items: center;
+  padding: 44px;
+  background: var(--bg-slate);
+  color: #e7ebf0;
+  position: relative; overflow: hidden;
+}
+.samples-panel::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line-dark) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-dark) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+.samples-copy, .samples-action { position: relative; z-index: 1; }
+.samples-panel .eyebrow { color: var(--accent-bright); }
+.samples-title {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3vw, 36px); line-height: 1.12;
+  margin: 8px 0 14px; color: #fff;
+}
+.samples-text { font-size: 15px; line-height: 1.7; color: #b6bec8; max-width: 54ch; }
+.samples-list {
+  list-style: none; margin: 22px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 8px 10px;
+}
+.samples-list li {
+  font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #cfd6de; border: 1px solid rgba(255,255,255,0.2); padding: 6px 11px;
+}
+.samples-action { text-align: right; }
+.btn-samples { font-size: 14px; padding: 17px 30px; }
+.samples-note {
+  margin-top: 12px; font-size: 10.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #868c95;
+}
+
+/* ==================================================================
+   DELIVERABLES GRID
+================================================================== */
+.deliverables-head { margin-top: 78px; }
+.deliverables-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--border-editorial);
+  border-left: 1px solid var(--border-editorial);
+}
+.deliverable {
+  padding: 30px 28px 34px;
+  border-right: 1px solid var(--border-editorial);
+  border-bottom: 1px solid var(--border-editorial);
+  transition: background .3s var(--ease-editorial);
+}
+.deliverable:hover { background: var(--accent-pale); }
+.deliverable span {
+  display: block; font-size: 11px; letter-spacing: 0.16em;
+  color: var(--accent); margin-bottom: 14px;
+}
+.deliverable h4 {
+  font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
+  margin-bottom: 9px; color: var(--text-main);
+}
+.deliverable p { font-size: 14px; line-height: 1.65; color: var(--text-muted); }
+
+/* ==================================================================
+   CLOSING CTA BAND
+================================================================== */
+.cta-band {
+  padding: 76px 0;
+  background: var(--accent-pale);
+  border-top: 1px solid var(--border-editorial);
+  border-bottom: 1px solid var(--border-editorial);
+}
+.cta-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 46px; flex-wrap: wrap;
+}
+.cta-copy { flex: 1 1 460px; }
+.cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.1;
+  letter-spacing: -0.02em; margin: 8px 0 12px;
+}
+.cta-text { font-size: 15.5px; line-height: 1.7; color: var(--text-muted); max-width: 56ch; }
+.cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ==================================================================
+   RESPONSIVE
+================================================================== */
+@media (max-width: 1000px) {
+  .samples-panel { grid-template-columns: 1fr; padding: 34px 26px; }
+  .samples-action { text-align: left; }
+  .deliverables-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .page-banner { padding: 38px 0 34px; }
+  .banner-head { gap: 16px; }
+  .banner-num { font-size: 34px; }
+  .banner-facts { grid-template-columns: 1fr; }
+  .banner-fact + .banner-fact {
+    padding-left: 0; border-left: 0; border-top: 1px solid var(--border-light);
+  }
+  .banner-fact { padding: 16px 0 0; }
+  .deliverables-grid { grid-template-columns: 1fr; }
+  .cta-band { padding: 52px 0; }
+  .cta-actions { width: 100%; }
+  .cta-actions .btn { flex: 1 1 auto; text-align: center; }
+}
