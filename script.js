@@ -115,6 +115,13 @@ function initPageRouter() {
     if (!firstSectionOfPage[page]) firstSectionOfPage[page] = section.id;
   });
 
+  // The id a page is addressed by in the nav. Landing on it means
+  // "open this page at the top" — anything else is a deep link.
+  const PAGE_ROUTE_ID = {
+    home: 'home', services: 'services', about: 'about',
+    projects: 'projects', contact: 'contact'
+  };
+
   const pageLinks = Array.from(document.querySelectorAll('[data-page-link]'));
 
   function idFromHref(href) {
@@ -149,7 +156,7 @@ function initPageRouter() {
         .forEach(el => el.classList.add('in-view'));
     }, 500);
 
-    const deepLink = targetId && targetId !== firstSectionOfPage[page]
+    const deepLink = targetId && targetId !== PAGE_ROUTE_ID[page]
       ? document.getElementById(targetId)
       : null;
 
@@ -160,14 +167,16 @@ function initPageRouter() {
     }
   }
 
-  function navigate(href) {
+  function navigate(href, toTop) {
     const id = idFromHref(href);
     const page = isRoute(id) ? pageOfSection[id] : 'home';
     const newHash = '#' + (id || 'home');
     if (window.location.hash !== newHash) {
       window.history.pushState(null, '', newHash);
     }
-    render(page, id);
+    // A main nav click means "open this page", so it opens at the top.
+    // A deep link from the footer still scrolls to its section.
+    render(page, toTop ? null : id);
   }
 
   function syncFromHash() {
@@ -235,7 +244,7 @@ function initNavigation() {
       // which swaps the page first and then scrolls to the section.
       const id = href.slice(1);
       if (window.RMSRouter && window.RMSRouter.isRoute(id)) {
-        window.RMSRouter.navigate(href);
+        window.RMSRouter.navigate(href, link.hasAttribute('data-page-link'));
         return;
       }
 

@@ -1498,3 +1498,130 @@ body[data-current-page]:not([data-current-page="home"]) main {
   .cta-actions { width: 100%; }
   .cta-actions .btn { flex: 1 1 auto; text-align: center; }
 }
+
+/* ==================================================================
+   REFINEMENT PASS
+   Goals: an engineering voice rather than an editorial one, a calmer
+   background, tighter vertical rhythm, and no duplicated scaffolding.
+================================================================== */
+
+/* ---- 1. Type: industrial grotesque replaces the display serif ---- */
+:root {
+  --font-serif: 'Archivo', 'Inter', -apple-system, sans-serif;
+  --grid-line: rgba(31, 70, 100, 0.045);
+  --grid-line-major: rgba(31, 70, 100, 0.075);
+  --grid-line-dark: rgba(255, 255, 255, 0.035);
+  --grid-line-dark-major: rgba(255, 255, 255, 0.06);
+}
+
+.hero-title {
+  font-weight: 700;
+  font-size: clamp(38px, 4.6vw, 62px);
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+}
+.section-title {
+  font-weight: 700;
+  font-size: clamp(28px, 2.9vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.032em;
+}
+.banner-title {
+  font-weight: 700;
+  font-size: clamp(34px, 3.8vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+.cta-title, .samples-title {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(24px, 2.4vw, 33px);
+  line-height: 1.14;
+}
+.card-title {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+.eyebrow { font-size: 10px; letter-spacing: 0.22em; }
+
+/* Long serif paragraphs were the loudest thing on the page. */
+.intro-lead, .about-lead, .lead, .section-sub, .banner-lede {
+  font-family: var(--font-sans);
+  font-size: 16.5px;
+  line-height: 1.72;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--text-muted);
+}
+
+/* ---- 2. Kill the dead band under the navbar ---- */
+body[data-current-page]:not([data-current-page="home"]) main { padding-top: 0; }
+.page-banner { padding: calc(36px + var(--header-solid-h) + 46px) 0 46px; }
+@media (max-width: 900px) {
+  .page-banner { padding: calc(36px + var(--header-solid-h) + 26px) 0 32px; }
+}
+
+/* ---- 3. Banner uses the full width instead of hugging the left ---- */
+.banner-head {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 0 26px;
+  align-items: start;
+}
+.banner-num { font-size: 40px; font-weight: 600; padding-top: 10px; }
+.banner-lede { max-width: 74ch; font-size: 17px; }
+
+/* ---- 4. No duplicate headers: the banner already introduces the page ---- */
+[data-banner] + section .section-marker,
+[data-banner] + section .section-head .eyebrow { display: none; }
+[data-banner] + section { padding-top: 62px; }
+
+/* ---- 5. Calmer section rhythm ---- */
+.section-marker { padding: 16px 0; }
+.marker-total { opacity: 0.55; }
+.deliverables-head { margin-top: 64px; }
+.samples-panel { margin-top: 56px; padding: 40px; }
+
+/* ---- 6. Buttons read as controls, not banners ---- */
+.btn { letter-spacing: 0.1em; }
+.btn-samples { font-size: 12.5px; padding: 15px 26px; }
+
+/* ---- 7. Four services deserve four columns on a desktop ---- */
+@media (min-width: 1100px) {
+  .services-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .service-card { padding: 34px 26px 38px; }
+}
+
+/* ==================================================================
+   MOBILE TIGHTENING
+   Cards were running ~500px tall for two lines of text, and section
+   padding left large empty bands between blocks.
+================================================================== */
+@media (max-width: 720px) {
+  .service-card { padding: 26px 22px 30px; }
+  .card-icon { margin: 14px 0 16px; }
+  .card-icon svg { width: 30px; height: 30px; }
+  .section-head { margin-bottom: 30px; }
+  .deliverable { padding: 24px 22px 26px; }
+  .samples-panel { margin-top: 36px; padding: 28px 22px; }
+  .samples-list { gap: 6px 8px; }
+  .container { padding: 0 22px; }
+  .banner-head { grid-template-columns: 1fr; }
+  .banner-num { font-size: 28px; padding-top: 0; margin-bottom: 4px; }
+}
+
+/* ==================================================================
+   NUMBERING REMOVED
+   The 01–12 scaffolding belonged to the old single-page layout.
+   With five pages it only added noise, so the banner title now
+   carries the page on its own.
+================================================================== */
+.banner-head { grid-template-columns: minmax(0, 1fr); }
+.page-banner .eyebrow { margin-bottom: 2px; }
+[data-banner] + section { padding-top: 74px; }
+@media (max-width: 720px) {
+  [data-banner] + section { padding-top: 46px; }
+}
